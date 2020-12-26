@@ -15,7 +15,7 @@ public class DriverControl extends LinearOpMode
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
 
-
+    //frontLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     @Override
     public void runOpMode() throws InterruptedException {
         //sets Motor equal to "motorOne" which is announce on the robot
@@ -23,24 +23,45 @@ public class DriverControl extends LinearOpMode
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
-
+        helpDrive robot = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
 
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         waitForStart();
 
         while (opModeIsActive()) {
-
-            if(gamepad1.dpad_left)
-                //frontLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-
-            rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
-            rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
-            leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
-            leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);
+            double speed = 0.8;
+            if(gamepad1.dpad_left){
+                robot.left(speed);
+            }else if(gamepad1.dpad_down){
+                robot.backward(speed);
+            }else if(gamepad1.dpad_right){
+                robot.right(speed);
+            }else if(gamepad1.dpad_up){
+                robot.right(speed);
+            }else if(gamepad1.right_bumper){
+                robot.turnRight(speed);
+            }else if(gamepad1.left_bumper){
+                robot.turnLeft(speed);
+            }else if(gamepad1.right_trigger!=0){
+                rightBackMotor.setPower(gamepad1.right_stick_x);
+                rightFrontMotor.setPower(gamepad1.right_stick_x);
+                leftBackMotor.setPower(-gamepad1.right_stick_x);
+                leftFrontMotor.setPower(-gamepad1.right_stick_x);
+            }else{
+                rightBackMotor.setPower(0);
+                rightFrontMotor.setPower(0);
+                leftBackMotor.setPower(0);
+                leftFrontMotor.setPower(0);
+            }
 
         }
     }
 
     }
+    /*rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
+            rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
+            leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
+            leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);
+*/
 
