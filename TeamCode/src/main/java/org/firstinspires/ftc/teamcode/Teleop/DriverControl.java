@@ -44,15 +44,9 @@ public class DriverControl extends LinearOpMode
             }else if(gamepad1.left_bumper){
                 robot.turnLeft(speed);
             }else if(gamepad1.right_trigger!=0){
-                rightBackMotor.setPower(gamepad1.right_stick_x);
-                rightFrontMotor.setPower(gamepad1.right_stick_x);
-                leftBackMotor.setPower(-gamepad1.right_stick_x);
-                leftFrontMotor.setPower(-gamepad1.right_stick_x);
+                robot.setPower(gamepad1.left_trigger,gamepad1.left_trigger, -gamepad1.left_trigger,-gamepad1.left_trigger);
             }else{
-                rightBackMotor.setPower(0);
-                rightFrontMotor.setPower(0);
-                leftBackMotor.setPower(0);
-                leftFrontMotor.setPower(0);
+                robot.setPower(0,0,0,0);
             }
 
         }
