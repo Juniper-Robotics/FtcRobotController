@@ -1,19 +1,26 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.OrientationSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 @TeleOp
 public class DriverControl extends LinearOpMode
 {
     //this is initializing ex)int number = DcMotor Motor
-   private DcMotor leftBackMotor;
+    private DcMotor leftBackMotor;
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
+
+    private BNO055IMU imu;
+    private Orientation angles;
 
     //frontLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     @Override
@@ -25,6 +32,11 @@ public class DriverControl extends LinearOpMode
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
         helpDrive robot = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
 
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        imu = hardwareMap.get(BNO055IMU.class,"imu");
+
+
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         waitForStart();
@@ -34,28 +46,23 @@ public class DriverControl extends LinearOpMode
             if(gamepad1.dpad_left){
                 robot.left(speed);
             }else if(gamepad1.dpad_down){
-                robot.backward(speed);
+                robot.forward(speed);
             }else if(gamepad1.dpad_right){
                 robot.right(speed);
             }else if(gamepad1.dpad_up){
-                robot.forward(speed);
+                robot.backward(speed);
             }else if(gamepad1.right_bumper){
                 robot.turnRight(speed);
             }else if(gamepad1.left_bumper){
                 robot.turnLeft(speed);
-            }else if(gamepad1.right_stick_x!=0){
-                robot.setPower(gamepad1.right_stick_x,gamepad1.right_stick_x, -gamepad1.right_stick_x,-gamepad1.right_stick_x);
-            }else{
-                robot.setPower(0,0,0,0);
+            }else {
+                rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
+                rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
+                leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
+                leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);}
             }
 
         }
     }
 
-    }
-    /*rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
-            rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
-            leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
-            leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);
-*/
-
+    
