@@ -57,7 +57,7 @@ public class helpDrive {
             leftFrontMotor.setPower(-speed/2);
     }
 
-    public void setPower(double rbp, double rfp, double lbp, double lfp){
+    public void setPowers(double rbp, double rfp, double lbp, double lfp){
         rightBackMotor.setPower(rbp);
         rightFrontMotor.setPower(rfp);
         leftBackMotor.setPower(lbp);

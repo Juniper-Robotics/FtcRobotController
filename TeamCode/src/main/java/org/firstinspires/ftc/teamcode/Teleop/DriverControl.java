@@ -3,10 +3,14 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.OrientationSensor;
+
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
@@ -22,6 +26,7 @@ public class DriverControl extends LinearOpMode
     private BNO055IMU imu;
     private Orientation angles;
 
+
     //frontLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,18 +35,26 @@ public class DriverControl extends LinearOpMode
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
-        helpDrive robot = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
-
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        imu = hardwareMap.get(BNO055IMU.class,"imu");
-
-
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        helpDrive robot = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
+
+       BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();//new parameters opbejct
+       parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
+        imu = hardwareMap.get(BNO055IMU.class,"imu");//getting from hardware map
+       parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        imu.initialize(parameters);
+
+        Gyro spinyboi = new Gyro(imu,angles,0.026,0.002,0, robot);
+
         waitForStart();
 
         while (opModeIsActive()) {
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData("angle: ",angles.firstAngle);
+            telemetry.update();
+
             double speed = 0.8;
             if(gamepad1.dpad_left){
                 robot.left(speed);
@@ -55,14 +68,16 @@ public class DriverControl extends LinearOpMode
                 robot.turnRight(speed);
             }else if(gamepad1.left_bumper){
                 robot.turnLeft(speed);
-            }else {
-                rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
-                rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
-                leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
-                leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);}
+            }else if(gamepad1.a) {
+                spinyboi.rotate(90);
+            }else{
+                    rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
+                    rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
+                    leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
+                    leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);}
             }
-
+            }
         }
-    }
 
-    
+
+
