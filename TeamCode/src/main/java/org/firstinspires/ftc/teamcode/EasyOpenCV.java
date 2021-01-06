@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -19,6 +18,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class EasyOpenCV extends LinearOpMode {
     OpenCvInternalCamera phoneCam;
     SkystoneDeterminationPipeline pipeline;
+    SkystoneDeterminationPipeline.RingPosition yeh;
 
     @Override
     public void runOpMode()
@@ -54,11 +54,14 @@ public class EasyOpenCV extends LinearOpMode {
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
+        yeh = pipeline.position;
+       // return pipeline.position;
     }
 
 
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline
     {
+
         /*
          * An enum to define the skystone position
          */
@@ -102,7 +105,7 @@ public class EasyOpenCV extends LinearOpMode {
         int avg1;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile RingPosition position = RingPosition.FOUR;
+        public volatile RingPosition position = RingPosition.FOUR;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
@@ -160,6 +163,10 @@ public class EasyOpenCV extends LinearOpMode {
         {
             return avg1;
         }
-    }
 
+    }
+    public SkystoneDeterminationPipeline.RingPosition stuff(){
+        //pipeline = new SkystoneDeterminationPipeline();
+        return yeh;
+    }
 }
