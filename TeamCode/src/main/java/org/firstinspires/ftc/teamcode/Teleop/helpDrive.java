@@ -44,17 +44,18 @@ public class helpDrive {
     }
 
     public void turnRight(double speed){
-            rightBackMotor.setPower(-speed/2);
-            rightFrontMotor.setPower(-speed/2);
-            leftBackMotor.setPower(speed/2);
-            leftFrontMotor.setPower(speed/2);
+
+            rightBackMotor.setPower(-speed/1.3);
+            rightFrontMotor.setPower(-speed/1.3);
+            leftBackMotor.setPower(speed/1.3);
+            leftFrontMotor.setPower(speed/1.3);
     }
 
     public void turnLeft(double speed){
-            rightBackMotor.setPower(speed/2);
-            rightFrontMotor.setPower(speed/2);
-            leftBackMotor.setPower(-speed/2);
-            leftFrontMotor.setPower(-speed/2);
+            rightBackMotor.setPower(speed/1.3);
+            rightFrontMotor.setPower(speed/1.3);
+            leftBackMotor.setPower(-speed/1.3);
+            leftFrontMotor.setPower(-speed/1.3);
     }
 
     public void setPowers(double rbp, double rfp, double lbp, double lfp){
@@ -62,5 +63,36 @@ public class helpDrive {
         rightFrontMotor.setPower(rfp);
         leftBackMotor.setPower(lbp);
         leftFrontMotor.setPower(lfp);
+    }
+
+    public void turnRight(double speed, long time) throws InterruptedException {
+        rightBackMotor.setPower(speed);
+        rightFrontMotor.setPower(speed);
+        leftBackMotor.setPower(-speed);
+        leftFrontMotor.setPower(-speed);
+        Thread.sleep(time);
+    }
+
+    public void forward(double speed, long time) throws InterruptedException {
+        rightBackMotor.setPower(-speed);
+        rightFrontMotor.setPower(-speed);
+        leftBackMotor.setPower(-speed);
+        leftFrontMotor.setPower(-speed);
+        Thread.sleep(time);
+    }
+
+    public void backward(double speed, long time) throws InterruptedException {
+        rightBackMotor.setPower(speed);
+        rightFrontMotor.setPower(speed);
+        leftBackMotor.setPower(speed);
+        leftFrontMotor.setPower(speed);
+        Thread.sleep(time);
+    }
+
+    public void StopDriving(){
+        rightBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        leftFrontMotor.setPower(0);
     }
 }

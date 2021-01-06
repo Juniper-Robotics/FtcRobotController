@@ -46,7 +46,7 @@ public class DriverControl extends LinearOpMode
        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         imu.initialize(parameters);
 
-        Gyro spinyboi = new Gyro(imu,angles,0.026,0.002,0, robot);
+        Gyro spinyboi = new Gyro(imu,angles,0.026,0,0, robot);
 
         waitForStart();
 
@@ -68,13 +68,17 @@ public class DriverControl extends LinearOpMode
                 robot.turnRight(speed);
             }else if(gamepad1.left_bumper){
                 robot.turnLeft(speed);
+            }else if(gamepad1.left_trigger!=0) {
+                robot.backward((0.5));
+            }else if(gamepad1.right_trigger !=0) {
+                robot.forward((0.5));
             }else if(gamepad1.a) {
-                spinyboi.rotate(90);
+                        spinyboi.rotate(90);
             }else{
-                    rightBackMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x);
-                    rightFrontMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x);
-                    leftBackMotor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x);
-                    leftFrontMotor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x);}
+                    rightBackMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x)/1.5);
+                    rightFrontMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x)/1.5);
+                    leftBackMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x)/1.5);
+                    leftFrontMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x)/1.5);}
             }
             }
         }

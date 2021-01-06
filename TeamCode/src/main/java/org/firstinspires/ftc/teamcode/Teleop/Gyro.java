@@ -35,15 +35,12 @@ public class Gyro {
 
     public void rotate(double desired) throws InterruptedException {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        current = porportional + integral + derivate;
-        error = Math.abs(angles.firstAngle - desired);
+        error = desired - angles.firstAngle ;
 
-        while(error !=0){
-
-            current = porportional + integral + derivate;
+        while(error < 0.01){
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            error = angles.firstAngle - desired;
+            error = desired - angles.firstAngle ;
 
             if(error < integralActiveZone && error!=0){
                 totalError += error;
@@ -56,10 +53,9 @@ public class Gyro {
             integral = totalError*i;
             derivate = (error - lastError) * d;
             lastError = error;
+            current = porportional + integral + derivate;
             robot.setPowers(current, current, -current, - current);
             Thread.sleep(30);
     }
-
-
 }}
 
