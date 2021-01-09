@@ -18,6 +18,11 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+import static java.lang.Thread.sleep;
+import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
+import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.NONE;
+import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.ONE;
+
 @Autonomous
 public class Auto extends LinearOpMode{
     private DcMotor leftBackMotor;
@@ -26,7 +31,7 @@ public class Auto extends LinearOpMode{
     private DcMotor rightFrontMotor;
     OpenCvInternalCamera phoneCam;
     EasyOpenCV.SkystoneDeterminationPipeline pipeline;
-    EasyOpenCV.SkystoneDeterminationPipeline.RingPosition yeh;
+  //  EasyOpenCV.SkystoneDeterminationPipeline.RingPosition yeh;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,21 +56,23 @@ public class Auto extends LinearOpMode{
             @Override
             public void onOpened()
             {
+                sleep(2000);
                 phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
             }
         });
 
         waitForStart();
 
+            sleep(2000);
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
             telemetry.update();
 
             sleep(100);//calibrate the thingy
 
-        four.BlueOne(bob);
-        //need to tune
-            switch(pipeline.position){
+        //50 in per 10000
+
+           switch(pipeline.position){
                 case FOUR:
                     four.BlueOne(bob);
                     break;
@@ -76,6 +83,13 @@ public class Auto extends LinearOpMode{
                     zero.blueOne(bob);
                     break;
             }
+         /* if(pipeline.position == FOUR){
+              four.BlueOne(bob);
+          }else if(pipeline.position == ONE){
+              one.blueOne(bob);
+          }else if(pipeline.position == NONE){
+              zero.blueOne(bob);
+          }*/
 
 
     }
@@ -102,12 +116,12 @@ public class Auto extends LinearOpMode{
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(180,80);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(180,100);
 
-        static final int REGION_WIDTH = 50;
-        static final int REGION_HEIGHT = 50;
+        static final int REGION_WIDTH = 100;
+        static final int REGION_HEIGHT = 100;
 
-        final int FOUR_RING_THRESHOLD = 130;
+        final int FOUR_RING_THRESHOLD = 135;
         final int ONE_RING_THRESHOLD = 129;
 
         Point region1_pointA = new Point(
@@ -126,7 +140,7 @@ public class Auto extends LinearOpMode{
         int avg1;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        public volatile EasyOpenCV.SkystoneDeterminationPipeline.RingPosition position = EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
+        public volatile EasyOpenCV.SkystoneDeterminationPipeline.RingPosition position;//= FOUR;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
@@ -160,9 +174,9 @@ public class Auto extends LinearOpMode{
                     BLUE, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
-            position = EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR; // Record our analysis
-            if(avg1 > FOUR_RING_THRESHOLD){
-                position = EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
+            //position = FOUR; // Record our analysis
+            if(avg1 >= FOUR_RING_THRESHOLD){
+                position =  EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
             }else if (avg1 > ONE_RING_THRESHOLD){
                 position = EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.ONE;
 

@@ -75,10 +75,10 @@ public class DriverControl extends LinearOpMode
             }else if(gamepad1.a) {
                         spinyboi.rotate(90);
             }else{
-                    rightBackMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x)/1.5);
-                    rightFrontMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x)/1.5);
-                    leftBackMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x)/1.5);
-                    leftFrontMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x)/1.5);}
+                    rightBackMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x)/2);
+                    rightFrontMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x)/2);
+                    leftBackMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x-gamepad1.right_stick_x)/2);
+                    leftFrontMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x-gamepad1.right_stick_x)/2);}
             }
             }
         }
