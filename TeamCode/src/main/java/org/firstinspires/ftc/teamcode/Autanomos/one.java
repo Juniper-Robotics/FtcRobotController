@@ -5,6 +5,11 @@ import org.firstinspires.ftc.teamcode.Teleop.helpDrive;
 import static java.lang.Thread.sleep;
 
 public class one {
+    public static void blueOne(encoders robot) throws InterruptedException {
+        robot.forward(10);
+        robot.backward(500);
+    }
+    /*
     public static void blueOne(helpDrive robot) throws InterruptedException {
         robot.forward(0.4,2520);
         robot.StopDriving();
@@ -29,5 +34,5 @@ public class one {
         robot.forward(0.2,6000);
         //robot.left(0.4);
         sleep(200);
-    }
+    }*/
 }

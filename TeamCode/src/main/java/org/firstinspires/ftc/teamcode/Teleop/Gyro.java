@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -13,32 +12,32 @@ public class Gyro {
     private double porportional, integral, derivate, error, totalError = 0, lastError, integralActiveZone =2;
    private double current = 0;
     private helpDrive robot;
-    private BNO055IMU imu;
+    private BNO055IMU spinyboy;
     private Orientation angles;
     BNO055IMU.Parameters parameters;
 
-    public Gyro( BNO055IMU imu, Orientation angles, double p, double i, double d, helpDrive robot){
+    public Gyro( BNO055IMU spinyboi, Orientation angles, double p, double i, double d, helpDrive robot){
 
         this.p = p;
         this.i = i;
         this.d = d;
         this.robot = robot;
-        this.imu = imu;
+        this.spinyboy = spinyboy;
         this.angles = angles;
 
         parameters = new BNO055IMU.Parameters();//new parameters opbejct
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
         parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        imu.initialize(parameters);
+        spinyboy.initialize(parameters);
 
     }
 
     public void rotate(double desired) throws InterruptedException {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         error = desired - angles.firstAngle ;
 
         while(error < 0.01){
-            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             error = desired - angles.firstAngle ;
 

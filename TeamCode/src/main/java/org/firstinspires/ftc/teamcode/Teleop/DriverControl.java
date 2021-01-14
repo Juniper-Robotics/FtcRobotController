@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.OrientationSensor;
-
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -38,7 +35,7 @@ public class DriverControl extends LinearOpMode
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        helpDrive robot = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
+        helpDrive carl = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
 
        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();//new parameters opbejct
        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
@@ -46,7 +43,7 @@ public class DriverControl extends LinearOpMode
        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         imu.initialize(parameters);
 
-        Gyro spinyboi = new Gyro(imu,angles,0.026,0,0, robot);
+        Gyro spinyboi = new Gyro(imu,angles,0.026,0,0, carl);
 
         waitForStart();
 
@@ -57,23 +54,23 @@ public class DriverControl extends LinearOpMode
 
             double speed = 0.8;
             if(gamepad1.dpad_left){
-                robot.left(speed);
+                carl.left(speed);
             }else if(gamepad1.dpad_down){
-                robot.forward(speed);
+                carl.forward(speed);
             }else if(gamepad1.dpad_right){
-                robot.right(speed);
+                carl.right(speed);
             }else if(gamepad1.dpad_up){
-                robot.backward(speed);
+                carl.backward(speed);
             }else if(gamepad1.right_bumper){
-                robot.turnRight(speed);
+                carl.turnRight(speed);
             }else if(gamepad1.left_bumper){
-                robot.turnLeft(speed);
+                carl.turnLeft(speed);
             }else if(gamepad1.left_trigger!=0) {
-                robot.backward((0.5));
+                carl.backward((0.5));
             }else if(gamepad1.right_trigger !=0) {
-                robot.forward((0.5));
+                carl.forward((0.5));
             }else if(gamepad1.a) {
-                        spinyboi.rotate(90);
+                        spinyboi.rotate(0);
             }else{
                     rightBackMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x)/2);
                     rightFrontMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x +gamepad1.right_stick_x)/2);

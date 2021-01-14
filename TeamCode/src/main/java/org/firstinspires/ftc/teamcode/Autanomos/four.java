@@ -5,8 +5,8 @@ import org.firstinspires.ftc.teamcode.Teleop.helpDrive;
 import static java.lang.Thread.sleep;
 
 public class four{
-    public static void BlueOne(helpDrive robot) throws InterruptedException {
-        robot.forward(0.4,2900);
+    public static void BlueOne(encoders joe) throws InterruptedException {
+        /*robot.forward(0.4,2900);
         robot.StopDriving();
         sleep(1500);
         robot.turnLeft(0.4);
@@ -17,11 +17,15 @@ public class four{
         robot.turnRight(0.4);
         sleep(1550);
         robot.backward(0.4,1060);
-        robot.StopDriving();
+        robot.StopDriving();*/
+        joe.forward(1000);
+
+
+
     }
 
-    public static void BlueTwo(helpDrive robot) throws InterruptedException {
-        robot.forward(0.4,3000);
+    public static void BlueTwo(encoders robot) throws InterruptedException {
+        /*robot.forward(0.4,3000);
         robot.StopDriving();
         sleep(1500);
         robot.turnLeft(0.4);
@@ -33,19 +37,19 @@ public class four{
         sleep(1750);
         robot.turnRight(0.4);
         sleep(1750);
-        robot.backward(0.4,1260);
+        robot.backward(0.4,1260);*/
     }
 
-    public static void RedTwo(helpDrive robot) throws InterruptedException {
-        robot.forward(0.4,3100);
+    public static void RedTwo(encoders robot) throws InterruptedException {
+     /*   robot.forward(0.4,3100);
         robot.StopDriving();
         sleep(1500);
         robot.backward(0.4,1460);
-        robot.StopDriving();
+        robot.StopDriving();*/
     }
 
-    public static void RedOne(helpDrive robot) throws InterruptedException {
-        robot.forward(0.4,3050);
+    public static void RedOne(encoders robot) throws InterruptedException {
+        /*robot.forward(0.4,3050);
         robot.StopDriving();
         sleep(1500);
         robot.turnRight(0.4);
@@ -57,8 +61,10 @@ public class four{
         sleep(1500);
         robot.turnLeft(0.4);
         sleep(1300);
-        robot.backward(0.4,1460);
+        robot.backward(0.4,1460);*/
     }
+
+
 
 
 

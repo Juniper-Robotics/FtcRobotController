@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autanomos;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.EasyOpenCV;
-import org.firstinspires.ftc.teamcode.Teleop.helpDrive;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -18,19 +15,18 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-import static java.lang.Thread.sleep;
-import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
-import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.NONE;
-import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.ONE;
+//import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
+//import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.NONE;
+//import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.ONE;
 
-@Autonomous
+//@Autonomous
 public class Auto extends LinearOpMode{
     private DcMotor leftBackMotor;
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
     OpenCvInternalCamera phoneCam;
-    EasyOpenCV.SkystoneDeterminationPipeline pipeline;
+    SkystoneDeterminationPipeline pipeline;
   //  EasyOpenCV.SkystoneDeterminationPipeline.RingPosition yeh;
 
     @Override
@@ -38,7 +34,7 @@ public class Auto extends LinearOpMode{
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new EasyOpenCV.SkystoneDeterminationPipeline();
+        //pipeline = new EasyOpenCV.SkystoneDeterminationPipeline();
         phoneCam.setPipeline(pipeline);
 
         rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
@@ -47,7 +43,7 @@ public class Auto extends LinearOpMode{
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
-        helpDrive bob = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
+        encoders bob = new encoders(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
 
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
@@ -65,7 +61,6 @@ public class Auto extends LinearOpMode{
 
             sleep(2000);
             telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
             telemetry.update();
 
             sleep(100);//calibrate the thingy
@@ -83,13 +78,6 @@ public class Auto extends LinearOpMode{
                     zero.blueOne(bob);
                     break;
             }
-         /* if(pipeline.position == FOUR){
-              four.BlueOne(bob);
-          }else if(pipeline.position == ONE){
-              one.blueOne(bob);
-          }else if(pipeline.position == NONE){
-              zero.blueOne(bob);
-          }*/
 
 
     }
@@ -100,7 +88,7 @@ public class Auto extends LinearOpMode{
         /*
          * An enum to define the skystone position
          */
-        public enum RingPosition
+       public enum RingPosition
         {
             FOUR,
             ONE,
@@ -134,13 +122,13 @@ public class Auto extends LinearOpMode{
         /*
          * Working variables
          */
-        Mat region1_Cb;
+       Mat region1_Cb;
         Mat YCrCb = new Mat();
         Mat Cb = new Mat();
         int avg1;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        public volatile EasyOpenCV.SkystoneDeterminationPipeline.RingPosition position;//= FOUR;
+        public volatile SkystoneDeterminationPipeline.RingPosition position;//= FOUR;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
@@ -176,12 +164,12 @@ public class Auto extends LinearOpMode{
 
             //position = FOUR; // Record our analysis
             if(avg1 >= FOUR_RING_THRESHOLD){
-                position =  EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
+                position =  SkystoneDeterminationPipeline.RingPosition.FOUR;
             }else if (avg1 > ONE_RING_THRESHOLD){
-                position = EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.ONE;
+                position = SkystoneDeterminationPipeline.RingPosition.ONE;
 
             }else{
-                position = EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.NONE;
+                position = SkystoneDeterminationPipeline.RingPosition.NONE;
             }
 
             Imgproc.rectangle(
@@ -200,5 +188,5 @@ public class Auto extends LinearOpMode{
         }
 
     }
-    }
+   }
 
