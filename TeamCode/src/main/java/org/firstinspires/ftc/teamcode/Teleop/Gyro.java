@@ -11,17 +11,18 @@ public class Gyro {
     private double p, i,d;
     private double porportional, integral, derivate, error, totalError = 0, lastError, integralActiveZone =2;
    private double current = 0;
-    private helpDrive robot;
+    private helpDrive Gerald;
     private BNO055IMU spinyboy;
     private Orientation angles;
     BNO055IMU.Parameters parameters;
 
-    public Gyro( BNO055IMU spinyboi, Orientation angles, double p, double i, double d, helpDrive robot){
+
+    public Gyro( BNO055IMU spinyboi, Orientation angles, double p, double i, double d, helpDrive Gerald){
 
         this.p = p;
         this.i = i;
         this.d = d;
-        this.robot = robot;
+        this.Gerald = Gerald;
         this.spinyboy = spinyboy;
         this.angles = angles;
 
@@ -32,6 +33,11 @@ public class Gyro {
 
     }
 
+    //attempting PID idk how to even tune so dunno why im coding this
+    // p is times
+    //i is pluses
+    //d is minuses
+    //code for doing the roatet
     public void rotate(double desired) throws InterruptedException {
         angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         error = desired - angles.firstAngle ;
@@ -53,7 +59,7 @@ public class Gyro {
             derivate = (error - lastError) * d;
             lastError = error;
             current = porportional + integral + derivate;
-            robot.setPowers(current, current, -current, - current);
+            Gerald.setPowers(current, current, -current, - current);
             Thread.sleep(30);
     }
 }}

@@ -8,6 +8,7 @@ public class helpDrive {
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
 
+    //running robot based on speed and some with time
     public helpDrive(DcMotor leftBackMotors, DcMotor rightBackMotors, DcMotor leftFrontMotors,  DcMotor rightFrontMotors){
         leftBackMotor = leftBackMotors;
         rightBackMotor = rightBackMotors;
