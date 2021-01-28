@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-//@TeleOp
+import java.util.List;
+
+
+@TeleOp
 public class TensorFlow extends LinearOpMode{
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -47,7 +48,7 @@ public class TensorFlow extends LinearOpMode{
                    // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
                    // should be set to the value of the images used to create the TensorFlow Object Detection model
                    // (typically 16/9).
-                   tfod.setZoom(2.5, 16.0 / 9.0);
+                   tfod.setZoom(2, 16.0 / 9.0);
 
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -100,7 +101,7 @@ public class TensorFlow extends LinearOpMode{
             parameters = new VuforiaLocalizer.Parameters();
 
             parameters.vuforiaLicenseKey = VUFORIA_KEY;
-            parameters.cameraDirection = CameraDirection.BACK;
+            parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
             //  Instantiate the Vuforia engine
             Vuforia = ClassFactory.getInstance().createVuforia(parameters);

@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class helpDrive {
@@ -7,14 +8,26 @@ public class helpDrive {
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
+    private BNO055IMU imu;
+
 
     //running robot based on speed and some with time
-    public helpDrive(DcMotor leftBackMotors, DcMotor rightBackMotors, DcMotor leftFrontMotors,  DcMotor rightFrontMotors){
+    public helpDrive(DcMotor leftBackMotors, DcMotor rightBackMotors, DcMotor leftFrontMotors, DcMotor rightFrontMotors, BNO055IMU imu){
         leftBackMotor = leftBackMotors;
         rightBackMotor = rightBackMotors;
         leftFrontMotor = leftFrontMotors;
         rightFrontMotor = rightFrontMotors;
+
     }
+
+    public helpDrive(DcMotor leftBackMotors, DcMotor rightBackMotors, DcMotor leftFrontMotors, DcMotor rightFrontMotors){
+        leftBackMotor = leftBackMotors;
+        rightBackMotor = rightBackMotors;
+        leftFrontMotor = leftFrontMotors;
+        rightFrontMotor = rightFrontMotors;
+
+    }
+
 
     public void forward(double speed){
         rightBackMotor.setPower(speed);
@@ -96,4 +109,6 @@ public class helpDrive {
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
     }
+
+
 }

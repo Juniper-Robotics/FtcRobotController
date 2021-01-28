@@ -1,23 +1,30 @@
 package org.firstinspires.ftc.teamcode.Autanomos;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.helpDrive;
+import org.firstinspires.ftc.teamcode.encoders;
+import org.firstinspires.ftc.teamcode.myMecnam;
 
 import java.util.List;
 
-@Autonomous
+@Autonomous(name = "tensor flow based")
 public class Autanomos extends LinearOpMode{
 
     private DcMotor leftBackMotor;
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
+    private BNO055IMU imu;
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
@@ -28,6 +35,7 @@ public class Autanomos extends LinearOpMode{
     private TFObjectDetector tfod;
     private VuforiaLocalizer Vuforia;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -37,9 +45,25 @@ public class Autanomos extends LinearOpMode{
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
-        encoders bob = new encoders(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
 
-        initVuforia();
+        int placement = 0;
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();//new parameters opbejct
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
+        imu = hardwareMap.get(BNO055IMU.class,"imu");//getting from hardware map
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        imu.initialize(parameters);
+
+        myMecnam odo = new myMecnam(hardwareMap,0,0,0, 13.6193231,13.250,1);
+        odo.updatePoseEstimate();
+        Pose2d currentPose = odo.getPoseEstimate();
+        //updates x, y , roation
+        //write loop later
+
+        encoders bob = new encoders(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor, imu, odo);
+        helpDrive carl = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor, imu);
+
+       initVuforia();
         initTfod();
 
         waitForStart();
@@ -55,7 +79,7 @@ public class Autanomos extends LinearOpMode{
                 // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
                 // should be set to the value of the images used to create the TensorFlow Object Detection model
                 // (typically 16/9).
-                tfod.setZoom(2.5, 16.0 / 9.0);
+                tfod.setZoom(2, 16.0 / 9.0);
 
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -67,6 +91,7 @@ public class Autanomos extends LinearOpMode{
                         // empty list.  no objects recognized.
                         telemetry.addData("TFOD", "No items detected.");
                         telemetry.addData("Target Zone", "A");
+                        placement = 0;
                         telemetry.update();
                     } else {
                         // list is not empty.
@@ -83,25 +108,39 @@ public class Autanomos extends LinearOpMode{
                             if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
                                 telemetry.addData("Target Zone", "B");
                                 telemetry.update();
-                                four.BlueOne(bob);
+                                placement = 2;
                             } else if (recognition.getLabel().equals(LABEL_FIRST_ELEMENT)) {
                                 telemetry.addData("Target Zone", "C");
                                 telemetry.update();
-                                one.blueOne(bob);
+                                placement = 4;
                             } else {
                                 telemetry.addData("Target Zone", "UNKNOWN");
                                 telemetry.update();
-                                zero.blueOne(bob);
+
                             }
                         }
                     }
                     telemetry.update();
                 }
+
             }
 
          if(tfod != null){
-            tfod.shutdown();}
+            tfod.shutdown();
+         }
 
+
+        switch(placement){
+            case 4:
+                four.BlueOne(carl);
+                break;
+            case 1:
+                one.blueOne(carl);
+                break;
+            case 0:
+                zero.blueOne(carl);
+                break;
+        }
 
     }
 
@@ -116,7 +155,8 @@ public class Autanomos extends LinearOpMode{
         parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        //parameters.cameraDirection = CameraDirection.BACK;
 
         //  Instantiate the Vuforia engine
         Vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -127,7 +167,7 @@ public class Autanomos extends LinearOpMode{
     /**
      * Initialize the TensorFlow Object Detection engine.
      */
-    private void initTfod() {
+   private void initTfod() {
         //VuforiaLocalizer.Parameters parameters;
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());

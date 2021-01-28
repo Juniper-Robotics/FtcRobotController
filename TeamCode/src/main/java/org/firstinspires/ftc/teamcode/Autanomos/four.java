@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.Autanomos;
 
-import org.firstinspires.ftc.teamcode.Teleop.helpDrive;
+import org.firstinspires.ftc.teamcode.helpDrive;
+import org.firstinspires.ftc.teamcode.encoders;
 
 import static java.lang.Thread.sleep;
 
 public class four{
-    public static void BlueOne(encoders joe) throws InterruptedException {
-        /*robot.forward(0.4,2900);
+    public static void BlueOne(encoders joe) throws InterruptedException {        joe.forward(1000);
+
+    }
+
+    public static void BlueOne(helpDrive robot) throws InterruptedException {
+        robot.forward(0.4,2900);
         robot.StopDriving();
         sleep(1500);
         robot.turnLeft(0.4);
@@ -17,11 +22,7 @@ public class four{
         robot.turnRight(0.4);
         sleep(1550);
         robot.backward(0.4,1060);
-        robot.StopDriving();*/
-        joe.forward(1000);
-
-
-
+        robot.StopDriving();
     }
 
     public static void BlueTwo(encoders robot) throws InterruptedException {

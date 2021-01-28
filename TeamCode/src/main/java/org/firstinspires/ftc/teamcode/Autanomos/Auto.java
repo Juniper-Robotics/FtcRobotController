@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autanomos;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.helpDrive;
+import org.firstinspires.ftc.teamcode.encoders;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -12,30 +16,29 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-//import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.FOUR;
-//import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.NONE;
-//import static org.firstinspires.ftc.teamcode.EasyOpenCV.SkystoneDeterminationPipeline.RingPosition.ONE;
-
-//@Autonomous
+@Autonomous(name = "opencv")
 public class Auto extends LinearOpMode{
     private DcMotor leftBackMotor;
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
-    OpenCvInternalCamera phoneCam;
+    OpenCvCamera webcam;
+    //OpenCvInternalCamera
     SkystoneDeterminationPipeline pipeline;
-  //  EasyOpenCV.SkystoneDeterminationPipeline.RingPosition yeh;
+    SkystoneDeterminationPipeline.RingPosition yeh;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        //pipeline = new EasyOpenCV.SkystoneDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        //origanlly phoneCam
+        //webcam = OpenCvCameraFactory.getInstance().createWebcam(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        pipeline = new  SkystoneDeterminationPipeline();
+        webcam.setPipeline(pipeline);
+        //phoneCam.setPipeline(pipeline);
 
         rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
@@ -44,16 +47,21 @@ public class Auto extends LinearOpMode{
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         encoders bob = new encoders(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor);
+       helpDrive carl = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor,rightFrontMotor );
 
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        //phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
+                //phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+                webcam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
                 sleep(2000);
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+
+                //phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
             }
         });
 
@@ -61,6 +69,7 @@ public class Auto extends LinearOpMode{
 
             sleep(2000);
             telemetry.addData("Analysis", pipeline.getAnalysis());
+            telemetry.addData("place",pipeline.position);
             telemetry.update();
 
             sleep(100);//calibrate the thingy
@@ -69,16 +78,15 @@ public class Auto extends LinearOpMode{
 
            switch(pipeline.position){
                 case FOUR:
-                    four.BlueOne(bob);
+                    four.BlueOne(carl);
                     break;
                 case ONE:
-                    one.blueOne(bob);
+                    one.blueOne(carl);
                     break;
                 case NONE:
-                    zero.blueOne(bob);
+                    zero.blueOne(carl);
                     break;
             }
-
 
     }
 
@@ -104,10 +112,10 @@ public class Auto extends LinearOpMode{
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(180,100);
+       static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(100,100);
 
-        static final int REGION_WIDTH = 100;
-        static final int REGION_HEIGHT = 100;
+        static final int REGION_WIDTH = 50;
+        static final int REGION_HEIGHT = 50;
 
         final int FOUR_RING_THRESHOLD = 135;
         final int ONE_RING_THRESHOLD = 129;
@@ -128,7 +136,7 @@ public class Auto extends LinearOpMode{
         int avg1;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        public volatile SkystoneDeterminationPipeline.RingPosition position;//= FOUR;
+        public volatile SkystoneDeterminationPipeline.RingPosition position= SkystoneDeterminationPipeline.RingPosition.FOUR;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
