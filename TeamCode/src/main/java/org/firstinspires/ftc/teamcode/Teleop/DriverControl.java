@@ -75,6 +75,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("x spot: ", now.getX());
            telemetry.addData("y spot: ", now.getY());
            telemetry.addData("shooter speed", shooter.returnSpeed());
+           telemetry.addData("shoot stuff", shooter.returnspeed());
            //telemetry.addData("servo", wobbleArm.returnPos());
             //telemetry.addData("pos",now);
             telemetry.update();
@@ -102,6 +103,7 @@ public class DriverControl extends LinearOpMode {
              //shooter stuff
                 if (gamepad2.right_trigger != 0) {
                     shooterOn = true;
+                    //telemetry.addData("hi",0);
                     shooter.reset();
                 } else if (gamepad2.right_trigger == 0) {
                     shooterOn = false;

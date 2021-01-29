@@ -12,7 +12,7 @@ public class Shooter {
     Servo shooterServo;
 
     //Tune this stuff
-    final com.acmerobotics.roadrunner.control.PIDCoefficients shooterPidCoeff = new PIDCoefficients(1,0,0);
+    final com.acmerobotics.roadrunner.control.PIDCoefficients shooterPidCoeff = new PIDCoefficients(100,0,0);
     PIDFController shooterPID = new PIDFController(shooterPidCoeff);
     double shooterSpeed = 0;
 
@@ -43,14 +43,19 @@ public class Shooter {
     }
 
     public double returnSpeed(){
-        //return shooterMotor.getPower();
-        return shooterMotor.getCurrentPosition();
+        return shooterSpeed;
+        //return shooterMotor.getCurrentPosition();
+    }
+
+    public double returnspeed(){
+        return shooterMotor.getPower();
+        //return shooterMotor.getCurrentPosition();
     }
     public void updateShooterSpeed(){
         int currentEncoderPos = shooterMotor.getCurrentPosition();
         int deltaEncPos = currentEncoderPos - lastPos;
         //was minutes but no method for that
-        double currentTime = elapsedTime.seconds();
+        double currentTime = elapsedTime.seconds()/60;
         double deltaTime = currentTime - lastTime;
 
         double deltaRot = deltaEncPos * (1/TICKS_PER_ROTATION);
