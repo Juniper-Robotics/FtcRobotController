@@ -66,19 +66,22 @@ public class myMecnam extends MecanumDrive {
 
     public double ticksToInches(int x){
         //do this stuf later
-        //7 per rotation
+        //29 per rotation
         //38.4845 cm circumferance aka 15.151378 in
         //5.49778571 per tick
-        return x*(15.151378/7);
+        return x*(0.0230068359);
     }
 
     @NotNull
     @Override
     public List<Double> getWheelPositions() {
         List<Double> positions = new ArrayList();
-        for(int i = 0; i<motors.size(); i++){
-            positions.add(ticksToInches(motors.get(i).getCurrentPosition()));
-        }
+        //for(int i = 0; i<motors.size(); i++){
+            positions.add(ticksToInches(-motors.get(0).getCurrentPosition()));
+        positions.add(ticksToInches(-motors.get(1).getCurrentPosition()));
+        positions.add(ticksToInches(motors.get(2).getCurrentPosition()));
+        positions.add(ticksToInches(motors.get(3).getCurrentPosition()));
+       // }
         return positions;
     }
 

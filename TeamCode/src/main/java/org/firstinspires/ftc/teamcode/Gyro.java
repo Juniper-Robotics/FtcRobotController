@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -17,9 +18,9 @@ public class Gyro {
     private Orientation angles;
     BNO055IMU.Parameters parameters;
     PIDCoefficients pid;
+    Telemetry tele;
 
-
-    public Gyro( BNO055IMU spinyboi, Orientation angles, double p, double i, double d, helpDrive Gerald){
+    public Gyro(BNO055IMU spinyboi, Orientation angles, double p, double i, double d, helpDrive Gerald, Telemetry telemetry){
 
         this.p = p;
         this.i = i;
@@ -27,6 +28,7 @@ public class Gyro {
         this.Gerald = Gerald;
         this.spinyboy = spinyboi;
         this.angles = angles;
+        tele = telemetry;
 
         parameters = new BNO055IMU.Parameters();//new parameters opbejct
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
@@ -78,6 +80,7 @@ public class Gyro {
             derivate = ((error-lastError)/elapsedTime)*d;
            // derivate = (error - lastError) * d;//time divide becasue change of rate of error
             //x is time adn y is error (error current-error last)/time current/tiem last
+            tele.addData("angle1",angles.firstAngle);
             lastError = error;
             current = porportional + integral + derivate;
             Gerald.setPowers(current, current, -current, - current);

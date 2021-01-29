@@ -17,6 +17,8 @@ import org.firstinspires.ftc.teamcode.WobbleGoalArm;
 import org.firstinspires.ftc.teamcode.helpDrive;
 import org.firstinspires.ftc.teamcode.myMecnam;
 
+import java.util.List;
+
 
 @TeleOp
 public class DriverControl extends LinearOpMode {
@@ -25,7 +27,7 @@ public class DriverControl extends LinearOpMode {
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
-
+    private DcMotor shooterMotor;
 
     private BNO055IMU imu;
     private Orientation angles;
@@ -39,14 +41,16 @@ public class DriverControl extends LinearOpMode {
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
+
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
         boolean collectorOn = false;
         boolean shooterOn = false;
         boolean wobbleOn = false;
-        Shooter shooter = new Shooter(hardwareMap);
+        Shooter shooter = new Shooter(hardwareMap, telemetry);
         WobbleGoalArm wobbleArm= new WobbleGoalArm(hardwareMap);
+
         Collector collector = new Collector((hardwareMap));
         helpDrive carl = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor, rightFrontMotor, imu);
 
@@ -56,28 +60,27 @@ public class DriverControl extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         imu.initialize(parameters);
         myMecnam mecam = new myMecnam(hardwareMap, 0, 0, 0, 13.6193231, 13.250, 1);
-        Pose2d now = mecam.getPoseEstimate(); // position
-       // List<Double> now; //for wheel position
-        Gyro spinyboi = new Gyro(imu, angles, 0.0035, 0.0005, 0, carl);
+        Pose2d eh = mecam.getPoseEstimate(); // position
+       List<Double> now; //for wheel position
+        Gyro spinyboi = new Gyro(imu, angles, 0.0026, 0.000, 0.0001, carl, telemetry);
 
+        Pose2d reset = new Pose2d(0,0,0);
         shooter.off();
         wobbleArm.off();
-
+        mecam.setPoseEstimate(reset);
 
 
         waitForStart();
 
         while (opModeIsActive()) {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            now = mecam.getPoseEstimate();
-           // now = mecam.getWheelPositions();
+            mecam.updatePoseEstimate();
+           // eh = mecam.getPoseEstimate();
+            now = mecam.getWheelPositions();
             telemetry.addData("angle: ", angles.firstAngle);
-            telemetry.addData("x spot: ", now.getX());
-           telemetry.addData("y spot: ", now.getY());
-           telemetry.addData("shooter speed", shooter.returnSpeed());
-           telemetry.addData("shoot stuff", shooter.returnspeed());
-           //telemetry.addData("servo", wobbleArm.returnPos());
-            //telemetry.addData("pos",now);
+           telemetry.addData("x spot: ", eh.getX());
+           telemetry.addData("y spot: ", eh.getY());
+            telemetry.addData("pos",now);
             telemetry.update();
 
             double speed = 0.8;
@@ -101,15 +104,17 @@ public class DriverControl extends LinearOpMode {
             } else
 
              //shooter stuff
-                if (gamepad2.right_trigger != 0) {
+                if (gamepad2.right_trigger > 0.1) {
                     shooterOn = true;
-                    //telemetry.addData("hi",0);
+                    telemetry.addData("hi",0);
                     shooter.reset();
-                } else if (gamepad2.right_trigger == 0) {
+                } else {
                     shooterOn = false;
                 }
             if (shooterOn) {
                 shooter.on();
+
+                telemetry.addData("bro",0);
             } else {
                 shooter.off();
             }
@@ -121,7 +126,7 @@ public class DriverControl extends LinearOpMode {
                 collectorOn = false;
             }
             if (collectorOn) {
-                collector.on();
+                collector.on(gamepad2.left_trigger);
             } else {
                 collector.off();
             }
@@ -150,10 +155,10 @@ public class DriverControl extends LinearOpMode {
             if (gamepad1.a) {
                 spinyboi.rotate(0);
             } else {
-                rightBackMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) / 2);
-                rightFrontMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) / 2);
-                leftBackMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) / 2);
-                leftFrontMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) / 2);
+                rightBackMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x)/2 + gamepad1.right_stick_x / 1.5);
+                rightFrontMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x)/2 + gamepad1.right_stick_x / 1.5);
+                leftBackMotor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x)/2 - gamepad1.right_stick_x / 1.5);
+                leftFrontMotor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x)/2 - gamepad1.right_stick_x / 1.5);
             }
         }
     }

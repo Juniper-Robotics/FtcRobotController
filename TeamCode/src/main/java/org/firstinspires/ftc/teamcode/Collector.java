@@ -9,8 +9,8 @@ public class Collector {
         collectorMotor = hardwareMap.get(DcMotor.class, "collectorMotor");
     }
 
-    public void on(){
-        collectorMotor.setPower(-0.7);
+    public void on(double power){
+        collectorMotor.setPower(-power);
     }
 
     public double returnSpeed(){

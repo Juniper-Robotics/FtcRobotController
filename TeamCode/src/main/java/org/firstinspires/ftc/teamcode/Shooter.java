@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Shooter {
     DcMotor shooterMotor;
     Servo shooterServo;
@@ -18,20 +20,22 @@ public class Shooter {
 
     int lastPos = 0;
     ElapsedTime elapsedTime;
-    double lastTime;
+    double lastTime = 0;
     //figure this stuff out
-    final double TICKS_PER_ROTATION = 103.6;
+    final double TICKS_PER_ROTATION = 28;
     final double TARGET_SPEED = 3000; //Update later
     final double SHOOTER_SERVO_LAUNCH_POSITION = 0;
     final double SHOOT_SERVO_RESET_POSITION = 0.8;
+    Telemetry telemetry;
 
-    public Shooter(HardwareMap hardwareMap) {
+    public Shooter(HardwareMap hardwareMap,Telemetry telemetry) {
         //update name
         shooterMotor = hardwareMap.get(DcMotor.class, "shooterMotor");
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
 
         elapsedTime = new ElapsedTime();
         shooterPID.setOutputBounds(-1, 1);
+        this.telemetry = telemetry;
         //reverse motor
 
     }
@@ -39,7 +43,8 @@ public class Shooter {
     public void on(){
         updateShooterSpeed();
         shooterMotor.setPower(shooterPID.update(shooterSpeed));
-       // shooterMotor.setPower(0.7);
+        telemetry.addData("currentPos", shooterMotor.getCurrentPosition());
+      //shooterMotor.setPower(1);
     }
 
     public double returnSpeed(){
@@ -54,12 +59,14 @@ public class Shooter {
     public void updateShooterSpeed(){
         int currentEncoderPos = shooterMotor.getCurrentPosition();
         int deltaEncPos = currentEncoderPos - lastPos;
+        telemetry.addData("encPos", deltaEncPos);
         //was minutes but no method for that
-        double currentTime = elapsedTime.seconds()/60;
+        double currentTime = elapsedTime.seconds()/60.0;
         double deltaTime = currentTime - lastTime;
+        telemetry.addData("deltaTime", deltaTime);
 
         double deltaRot = deltaEncPos * (1/TICKS_PER_ROTATION);
-
+        telemetry.addData("deltaRot", deltaRot);
         shooterSpeed = deltaRot/deltaTime;
 
         lastTime = currentTime;
