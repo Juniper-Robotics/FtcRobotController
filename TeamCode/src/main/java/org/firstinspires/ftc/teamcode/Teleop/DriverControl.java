@@ -27,7 +27,7 @@ public class DriverControl extends LinearOpMode {
     private DcMotor rightBackMotor;
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
-    private DcMotor shooterMotor;
+   // private DcMotor shooterMotor;
 
     private BNO055IMU imu;
     private Orientation angles;
@@ -62,20 +62,21 @@ public class DriverControl extends LinearOpMode {
         myMecnam mecam = new myMecnam(hardwareMap, 0, 0, 0, 13.6193231, 13.250, 1);
         Pose2d eh = mecam.getPoseEstimate(); // position
        List<Double> now; //for wheel position
-        Gyro spinyboi = new Gyro(imu, angles, 0.0026, 0.000, 0.0001, carl, telemetry);
+        Gyro spinyboi = new Gyro(imu, angles, 0.0028, 0.000, 0.0001, carl, telemetry);
 
         Pose2d reset = new Pose2d(0,0,0);
         shooter.off();
         wobbleArm.off();
         mecam.setPoseEstimate(reset);
+       // shooter.resetMotor();
 
 
         waitForStart();
 
         while (opModeIsActive()) {
+            mecam.getPoseEstimate();
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             mecam.updatePoseEstimate();
-           // eh = mecam.getPoseEstimate();
             now = mecam.getWheelPositions();
             telemetry.addData("angle: ", angles.firstAngle);
            telemetry.addData("x spot: ", eh.getX());
@@ -85,7 +86,7 @@ public class DriverControl extends LinearOpMode {
 
             double speed = 0.8;
 
-            if (gamepad1.dpad_left) {
+           if (gamepad1.dpad_left) {
                 carl.left(speed);
             } else if (gamepad1.dpad_down) {
                 carl.forward(speed);
@@ -106,7 +107,7 @@ public class DriverControl extends LinearOpMode {
              //shooter stuff
                 if (gamepad2.right_trigger > 0.1) {
                     shooterOn = true;
-                    telemetry.addData("hi",0);
+                    //telemetry.addData("hi",0);
                     shooter.reset();
                 } else {
                     shooterOn = false;
@@ -114,7 +115,7 @@ public class DriverControl extends LinearOpMode {
             if (shooterOn) {
                 shooter.on();
 
-                telemetry.addData("bro",0);
+                //telemetry.addData("bro",0);
             } else {
                 shooter.off();
             }

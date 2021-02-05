@@ -80,19 +80,20 @@ public class Autanomos extends LinearOpMode{
                 // should be set to the value of the images used to create the TensorFlow Object Detection model
                 // (typically 16/9).
                 tfod.setZoom(2, 16.0 / 9.0);
-
+                sleep(1000);
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
-                    telemetry.update();
+                  //  telemetry.update();
                     if (updatedRecognitions.size() == 0) {
                         // empty list.  no objects recognized.
                         telemetry.addData("TFOD", "No items detected.");
                         telemetry.addData("Target Zone", "A");
+                        zero.blueOne(bob);
                         placement = 0;
-                        telemetry.update();
+                      //  telemetry.update();
                     } else {
                         // list is not empty.
                         // step through the list of recognitions and display boundary info.
@@ -103,16 +104,19 @@ public class Autanomos extends LinearOpMode{
                                     recognition.getLeft(), recognition.getTop());
                             telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                     recognition.getRight(), recognition.getBottom());
-                            telemetry.update();
+                          //  telemetry.update();
                             // check label to see which target zone to go after.
                             if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
                                 telemetry.addData("Target Zone", "B");
-                                telemetry.update();
-                                placement = 2;
+                                one.blueOne(carl);
+                                placement = 1;
+                                telemetry.addData("placement", placement);
                             } else if (recognition.getLabel().equals(LABEL_FIRST_ELEMENT)) {
                                 telemetry.addData("Target Zone", "C");
-                                telemetry.update();
                                 placement = 4;
+                                four.BlueOne(carl);
+                                telemetry.addData("placement", placement);
+
                             } else {
                                 telemetry.addData("Target Zone", "UNKNOWN");
                                 telemetry.update();
@@ -125,21 +129,9 @@ public class Autanomos extends LinearOpMode{
 
             }
 
-         if(tfod != null){
+
+        if(tfod != null){
             tfod.shutdown();
-         }
-
-
-        switch(placement){
-            case 4:
-                four.BlueOne(carl);
-                break;
-            case 1:
-                one.blueOne(carl);
-                break;
-            case 0:
-                zero.blueOne(carl);
-                break;
         }
 
     }

@@ -77,8 +77,8 @@ public class myMecnam extends MecanumDrive {
     public List<Double> getWheelPositions() {
         List<Double> positions = new ArrayList();
         //for(int i = 0; i<motors.size(); i++){
-            positions.add(ticksToInches(-motors.get(0).getCurrentPosition()));
-        positions.add(ticksToInches(-motors.get(1).getCurrentPosition()));
+            positions.add(ticksToInches(motors.get(0).getCurrentPosition()));
+        positions.add(ticksToInches(motors.get(1).getCurrentPosition()));
         positions.add(ticksToInches(motors.get(2).getCurrentPosition()));
         positions.add(ticksToInches(motors.get(3).getCurrentPosition()));
        // }

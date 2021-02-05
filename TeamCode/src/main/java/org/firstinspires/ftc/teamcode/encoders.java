@@ -61,12 +61,29 @@ public class encoders  {
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+  /*  public void reset(){
+        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+    }*/
+
     public void forward(int ticks){
         rightBackMotor.setTargetPosition(ticks);
         leftBackMotor.setTargetPosition(ticks);
         rightFrontMotor.setTargetPosition(ticks);
         leftFrontMotor.setTargetPosition(ticks);
         this.runToPosition();
+
+        while(rightBackMotor.isBusy() && leftBackMotor.isBusy() && rightFrontMotor.isBusy() && leftFrontMotor.isBusy()){
+
+        }
+
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     public void backward(int ticks){

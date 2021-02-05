@@ -9,24 +9,19 @@ public class zero {
     public static void blueOne(encoders robot) throws InterruptedException {
         robot.forward(1300);
 
-        robot.turnLeft(400);
+       // robot.turnLeft(400);
 
-        robot.forward(200);
+        //robot.forward(200);
     }
 
     public static void blueOne(helpDrive robot) throws InterruptedException {
-        robot.forward(0.5, 500);
-        robot.right(0.5);
-        sleep(500);
+        robot.forward(0.4, 2000);
+        robot.StopDriving();
+        sleep(1000);
+        robot.turnRight(0.5,1750);
+        robot.forward(0.5,500);
+        robot.StopDriving();
+        sleep(800);
     }
 
-    public static void redOne(helpDrive robot) throws InterruptedException {
-        robot.forward(0.5, 500);
-        robot.right(0.5);
-        sleep(500);
-    }
-
-    public static void redtwo(helpDrive robot) throws InterruptedException {
-       robot.forward(0.5, 500);
-    }
 }

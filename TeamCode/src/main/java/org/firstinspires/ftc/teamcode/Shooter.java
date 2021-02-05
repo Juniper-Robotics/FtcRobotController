@@ -14,7 +14,8 @@ public class Shooter {
     Servo shooterServo;
 
     //Tune this stuff
-    final com.acmerobotics.roadrunner.control.PIDCoefficients shooterPidCoeff = new PIDCoefficients(100,0,0);
+    //0.00021, 0, 0.0001
+    final com.acmerobotics.roadrunner.control.PIDCoefficients shooterPidCoeff = new PIDCoefficients(0.00022,0,0.000);
     PIDFController shooterPID = new PIDFController(shooterPidCoeff);
     double shooterSpeed = 0;
 
@@ -34,30 +35,48 @@ public class Shooter {
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
 
         elapsedTime = new ElapsedTime();
-        shooterPID.setOutputBounds(-1, 1);
+        shooterPID.setOutputBounds(-0.8, 0.8);
         this.telemetry = telemetry;
         //reverse motor
 
     }
 
+    public void resetMotor(){
+        shooterMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+    }
+
+
+    //Things that works:
+    //current posigyion
+    //time
+    //literally all of them what the heck
     public void on(){
-        updateShooterSpeed();
-        shooterMotor.setPower(shooterPID.update(shooterSpeed));
+       updateShooterSpeed();
+        telemetry.addData("shooterspeed", shooterPID.update(shooterSpeed));
+       shooterMotor.setPower(shooterPID.update(shooterSpeed));
+
         telemetry.addData("currentPos", shooterMotor.getCurrentPosition());
-      //shooterMotor.setPower(1);
+        //telemetry.update();
     }
 
-    public double returnSpeed(){
-        return shooterSpeed;
-        //return shooterMotor.getCurrentPosition();
-    }
-
-    public double returnspeed(){
-        return shooterMotor.getPower();
-        //return shooterMotor.getCurrentPosition();
-    }
     public void updateShooterSpeed(){
         int currentEncoderPos = shooterMotor.getCurrentPosition();
+        int deltaEncPos = currentEncoderPos - lastPos;
+       // telemetry.addData("encPos", deltaEncPos);
+        //was minutes but no method for that
+        double currentTime = elapsedTime.seconds()/60.0;
+        double deltaTime = currentTime - lastTime;
+       // telemetry.addData("deltaTime", deltaTime);
+
+        double deltaRot = deltaEncPos * (1/TICKS_PER_ROTATION);
+       // telemetry.addData("deltaRot", deltaRot);
+        shooterSpeed = deltaRot/deltaTime;
+
+        lastTime = currentTime;
+        lastPos = currentEncoderPos;
+
+
+       /* int currentEncoderPos = shooterMotor.getCurrentPosition();
         int deltaEncPos = currentEncoderPos - lastPos;
         telemetry.addData("encPos", deltaEncPos);
         //was minutes but no method for that
@@ -70,7 +89,7 @@ public class Shooter {
         shooterSpeed = deltaRot/deltaTime;
 
         lastTime = currentTime;
-        lastPos = currentEncoderPos;
+        lastPos = currentEncoderPos;*/
     }
 
 

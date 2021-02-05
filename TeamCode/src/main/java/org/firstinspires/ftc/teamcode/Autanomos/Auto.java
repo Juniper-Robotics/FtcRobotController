@@ -78,7 +78,7 @@ public class Auto extends LinearOpMode{
 
            switch(pipeline.position){
                 case FOUR:
-                    four.BlueOne(carl);
+                    four.BlueOne(bob);
                     break;
                 case ONE:
                     one.blueOne(carl);
