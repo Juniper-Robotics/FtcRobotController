@@ -46,17 +46,18 @@ public class Shooter {
     }
 
 
-    //Things that works:
-    //current posigyion
-    //time
-    //literally all of them what the heck
+    //THIS IS WHERE YOU EDIT ARM
     public void on(){
+        //commant out this stuff
        updateShooterSpeed();
         telemetry.addData("shooterspeed", shooterPID.update(shooterSpeed));
        shooterMotor.setPower(shooterPID.update(shooterSpeed));
-
         telemetry.addData("currentPos", shooterMotor.getCurrentPosition());
-        //telemetry.update();
+        //uncommint out this
+        // |
+        // V
+       // shooterMotor.setPower(0.8);
+
     }
 
     public void updateShooterSpeed(){
