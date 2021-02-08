@@ -91,7 +91,7 @@ public class Autanomos extends LinearOpMode{
                         // empty list.  no objects recognized.
                         telemetry.addData("TFOD", "No items detected.");
                         telemetry.addData("Target Zone", "A");
-                        zero.blueOne(bob);
+                        zero.blueOne(carl);
                         placement = 0;
                       //  telemetry.update();
                     } else {
@@ -108,7 +108,7 @@ public class Autanomos extends LinearOpMode{
                             // check label to see which target zone to go after.
                             if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
                                 telemetry.addData("Target Zone", "B");
-                                one.blueOne(carl);
+                                one.blueOne(bob);
                                 placement = 1;
                                 telemetry.addData("placement", placement);
                             } else if (recognition.getLabel().equals(LABEL_FIRST_ELEMENT)) {

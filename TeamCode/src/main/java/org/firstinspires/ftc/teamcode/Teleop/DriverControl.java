@@ -74,7 +74,7 @@ public class DriverControl extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            mecam.getPoseEstimate();
+            eh = mecam.getPoseEstimate();
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             mecam.updatePoseEstimate();
             now = mecam.getWheelPositions();
