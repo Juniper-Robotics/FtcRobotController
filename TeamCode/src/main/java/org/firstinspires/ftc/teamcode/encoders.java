@@ -19,7 +19,7 @@ public class encoders  {
     private DcMotor rightFrontMotor;
     private BNO055IMU imu;
     private myMecnam mecam;
-    private double integralActiveZone = 3;
+    private double integralActiveZone = 2.5;
 
 
     public encoders(DcMotor leftBackMotor, DcMotor rightBackMotor, DcMotor leftFrontMotor, DcMotor rightFrontMotor , BNO055IMU imu, myMecnam mecam){
@@ -133,11 +133,16 @@ public class encoders  {
 
     //going spin and then
     public void goTo(Pose2d distance, PIDCoefficients pid, Telemetry telemetry) throws InterruptedException {
+
         Pose2d now = mecam.getPoseEstimate();
         Pose2d go = distance;
         double current = 0;
         double x = go.getX() - now.getX();//difference at start
         double y = go.getY() - now.getY();//difference at start
+        boolean backorfor;
+        if(x<0){
+            backorfor = true;
+        }else{backorfor=false;}
 
         double error = Math.hypot(x,y);
         double derivate = 0, porportional = 0, integral = 0;
@@ -152,8 +157,8 @@ public class encoders  {
         float startAngle = mecam.spinyBoi.returnAngle();
         while (Math.abs(error) > 1 )
         {
-           telemetry.addData("x",x);
-           telemetry.addData("y",y);
+           telemetry.addData("x",now.getX());
+           telemetry.addData("y",now.getY());
             now = mecam.getPoseEstimate();
             mecam.updatePoseEstimate();
             //distance of change with x and y now is origanl starting
@@ -164,7 +169,7 @@ public class encoders  {
             //error = distanc-noww;
             telemetry.addData("error",error);
             if (Math.abs(error) < integralActiveZone && error != 0) {
-                totalError += x;
+                totalError += Math.abs(x);
             } else {
                 totalError = 0;
             }
@@ -181,11 +186,30 @@ public class encoders  {
             start = end;
             derivate = ((x-lastError)/elapsedTime) * pid.d;
             lastError = error;
+            telemetry.addData("p",porportional);
+            telemetry.addData("i",integral);
+            telemetry.addData("total Error",totalError);
             current = porportional + integral + derivate;
-            if(error>lastError+1){
-            mecam.gerlad.setPowers(current,current, current,current);
-            }else{
-                mecam.gerlad.setPowers(current, current, current, current);
+            telemetry.addData("lastError", lastError);
+            telemetry.addData("current",current);
+            if(backorfor)
+            {
+                if(error>lastError+3){
+                    telemetry.addData("bigeer",8);
+                 mecam.gerlad.setPowers(-current,-current, -current,-current);
+                 }else{
+                    telemetry.addData("smaller",9);
+                     mecam.gerlad.setPowers(current,current, current, current);
+                    }
+            }else
+             {
+                if(error>lastError+3){
+                    telemetry.addData("bigeer",8);
+                mecam.gerlad.setPowers(current,current, current,current);
+                }else{
+                    telemetry.addData("smaller",9);
+                mecam.gerlad.setPowers(-current, -current, -current, -current);
+                }
             }
             //Thread.sleep(30);
 

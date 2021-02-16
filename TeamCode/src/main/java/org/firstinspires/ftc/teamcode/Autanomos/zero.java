@@ -13,8 +13,8 @@ import static java.lang.Thread.sleep;
 public class zero {
     //TELEMETRY INTO SPINYBOI
     public static void blueOne(encoders robot, Telemetry telemetry, Gyro spinyboi) throws InterruptedException {
-        PIDCoefficients PID= new PIDCoefficients(0.013,0.001,0);
-        Pose2d pose1 = new Pose2d(0,10);
+        PIDCoefficients PID= new PIDCoefficients(0.03,0.008,0);
+        Pose2d pose1 = new Pose2d(-8,0);
         Pose2d pose2 = new Pose2d(0,0);
        // spinyboi.rotate(20);
 

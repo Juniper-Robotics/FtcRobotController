@@ -80,6 +80,7 @@ public class Gyro {
 
             porportional = error*p;
             integral = totalError*i;
+            tele.addData("total error", totalError);
             long end = System.currentTimeMillis();
             long elapsedTime = end - start;
             derivate = ((error-lastError)/elapsedTime)*d;
