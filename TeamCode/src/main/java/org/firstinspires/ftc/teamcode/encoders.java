@@ -5,6 +5,8 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 //@Autonomous
@@ -17,7 +19,7 @@ public class encoders  {
     private DcMotor rightFrontMotor;
     private BNO055IMU imu;
     private myMecnam mecam;
-    private double integralActiveZone = 2;
+    private double integralActiveZone = 3;
 
 
     public encoders(DcMotor leftBackMotor, DcMotor rightBackMotor, DcMotor leftFrontMotor, DcMotor rightFrontMotor , BNO055IMU imu, myMecnam mecam){
@@ -128,40 +130,40 @@ public class encoders  {
         this.runToPosition();
     }
 
-    //two approaches:
-    //-going y and then x
+
     //going spin and then
-    public void goTo(Pose2d distance, PIDCoefficients pid) throws InterruptedException {
+    public void goTo(Pose2d distance, PIDCoefficients pid, Telemetry telemetry) throws InterruptedException {
         Pose2d now = mecam.getPoseEstimate();
         Pose2d go = distance;
         double current = 0;
-        double x = go.getX() - now.getX();
-        double y = go.getY() - now.getY();
+        double x = go.getX() - now.getX();//difference at start
+        double y = go.getY() - now.getY();//difference at start
 
-        double distanc = Math.hypot(x,y);
-        double noww = 0;
-        double error = distanc-noww;
+        double error = Math.hypot(x,y);
         double derivate = 0, porportional = 0, integral = 0;
         long start = System.currentTimeMillis();
         double totalError = 0;
         double lastError = 0;
 
         double angle = Math.atan(x/y);
+        telemetry.addData("angle want", angle);
         mecam.spinyBoi.rotate(angle);
+        telemetry.addData("angle",angle);
         float startAngle = mecam.spinyBoi.returnAngle();
-        float nowAngle;
-
-        while (Math.abs(error) > 0.01 )
+        while (Math.abs(error) > 1 )
         {
-            nowAngle = mecam.spinyBoi.returnAngle();
-            //distance of change with x and y now is origanl starting
+           telemetry.addData("x",x);
+           telemetry.addData("y",y);
             now = mecam.getPoseEstimate();
-            x = go.getX() - now.getX();
-            y = go.getY() - now.getY();
-            noww = Math.hypot(x,y);
-            error = distanc-noww;
+            mecam.updatePoseEstimate();
+            //distance of change with x and y now is origanl starting
 
-            if (error < integralActiveZone && error != 0) {
+            x = distance.getX() - now.getX();//x difference
+            y = distance.getY() - now.getY();//y edifference
+            error = Math.hypot(x,y); //noww is always the total error from begiing; disatcn
+            //error = distanc-noww;
+            telemetry.addData("error",error);
+            if (Math.abs(error) < integralActiveZone && error != 0) {
                 totalError += x;
             } else {
                 totalError = 0;
@@ -180,13 +182,17 @@ public class encoders  {
             derivate = ((x-lastError)/elapsedTime) * pid.d;
             lastError = error;
             current = porportional + integral + derivate;
-            mecam.gerlad.setPowers(current, current, current, current);
-            //Thread.sleep(30);
-            if(Math.abs(nowAngle-startAngle)>1){
-                mecam.spinyBoi.rotate(angle);
+            if(error>lastError+1){
+            mecam.gerlad.setPowers(current,current, current,current);
+            }else{
+                mecam.gerlad.setPowers(current, current, current, current);
             }
-            mecam.gerlad.setPowers(current, current, current, current);
+            //Thread.sleep(30);
+
+            //mecam.gerlad.setPowers(current, current, current, current);
+            telemetry.update();
         }
+
 
     }
 

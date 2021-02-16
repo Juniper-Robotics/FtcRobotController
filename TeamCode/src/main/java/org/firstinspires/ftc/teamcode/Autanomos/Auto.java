@@ -76,7 +76,7 @@ public class Auto extends LinearOpMode{
 
         //50 in per 10000
 
-           switch(pipeline.position){
+           /*switch(pipeline.position){
                 case FOUR:
                     four.BlueOne(bob);
                     break;
@@ -86,7 +86,7 @@ public class Auto extends LinearOpMode{
                 case NONE:
                     zero.blueOne(carl);
                     break;
-            }
+            }*/
 
     }
 

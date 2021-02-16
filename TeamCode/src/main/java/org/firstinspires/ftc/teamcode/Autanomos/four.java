@@ -1,14 +1,21 @@
 package org.firstinspires.ftc.teamcode.Autanomos;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.helpDrive;
 import org.firstinspires.ftc.teamcode.encoders;
 
 import static java.lang.Thread.sleep;
 
 public class four{
-    public static void BlueOne(encoders joe) throws InterruptedException {
+
+    public static void BlueOne(encoders joe, Telemetry telemetry) throws InterruptedException {
        // joe.reset();
-        joe.forward(1000);
+        Pose2d distance = new Pose2d(0,0);
+        com.qualcomm.robotcore.hardware.PIDCoefficients PID = new PIDCoefficients(0,0,0);
+        joe.goTo(distance,PID, telemetry);
 
     }
 

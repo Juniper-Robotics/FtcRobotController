@@ -45,9 +45,9 @@ public class DriverControl extends LinearOpMode {
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        boolean collectorOn = false;
+        boolean collectorOn = true;
         boolean shooterOn = false;
-        boolean wobbleOn = false;
+        boolean wobbleOn = true;
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         WobbleGoalArm wobbleArm= new WobbleGoalArm(hardwareMap);
 
@@ -59,14 +59,13 @@ public class DriverControl extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");//getting from hardware map
         parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         imu.initialize(parameters);
-        myMecnam mecam = new myMecnam(hardwareMap, 0, 0, 0, 13.6193231, 13.250, 1);
+        myMecnam mecam = new myMecnam(hardwareMap, 0, 0, 0, 13.6193231, 13.250, 1, telemetry);
         Pose2d eh = mecam.getPoseEstimate(); // position
        List<Double> now; //for wheel position
-        Gyro spinyboi = new Gyro(imu, angles, 0.0028, 0.000, 0.0001, carl, telemetry);
-
+        Gyro spinyboi = new Gyro(imu, angles, 0.019, 0.001, 0.000, carl, telemetry);
         Pose2d reset = new Pose2d(0,0,0);
         shooter.off();
-        wobbleArm.off();
+       // wobbleArm.on();
         mecam.setPoseEstimate(reset);
        // shooter.resetMotor();
 
@@ -143,6 +142,9 @@ public class DriverControl extends LinearOpMode {
                 wobbleArm.on();
             } else {
                 wobbleArm.off();
+            }
+            if(gamepad2.x){
+                wobbleArm.middle();
             }
 
 

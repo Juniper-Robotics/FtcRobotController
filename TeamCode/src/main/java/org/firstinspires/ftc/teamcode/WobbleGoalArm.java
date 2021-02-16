@@ -13,8 +13,10 @@ public class WobbleGoalArm {
     public double returnPos(){
         return wobbleServo.getPosition();
     }
-    public void on(){ wobbleServo.setPosition(0.8); }
+    public void on(){ wobbleServo.setPosition(0.3); }
 
-    public void off(){ wobbleServo.setPosition(0); }
+    public void middle(){wobbleServo.setPosition(0.1);}
+
+    public void off(){ wobbleServo.setPosition(0.04); }
 
 }

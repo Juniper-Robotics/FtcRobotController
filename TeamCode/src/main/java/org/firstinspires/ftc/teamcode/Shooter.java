@@ -14,7 +14,7 @@ public class Shooter {
     Servo shooterServo;
 
     //Tune this stuff
-    //0.00021, 0, 0.0001
+    //0.00022,0,0
     final com.acmerobotics.roadrunner.control.PIDCoefficients shooterPidCoeff = new PIDCoefficients(0.00022,0,0.000);
     PIDFController shooterPID = new PIDFController(shooterPidCoeff);
     double shooterSpeed = 0;
@@ -24,7 +24,7 @@ public class Shooter {
     double lastTime = 0;
     //figure this stuff out
     final double TICKS_PER_ROTATION = 28;
-    final double TARGET_SPEED = 3000; //Update later
+    final double TARGET_SPEED = 8000; //Update later
     final double SHOOTER_SERVO_LAUNCH_POSITION = 0;
     final double SHOOT_SERVO_RESET_POSITION = 0.8;
     Telemetry telemetry;

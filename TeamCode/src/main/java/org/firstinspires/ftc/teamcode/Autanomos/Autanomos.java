@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autanomos;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,8 +10,8 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.helpDrive;
 import org.firstinspires.ftc.teamcode.encoders;
+import org.firstinspires.ftc.teamcode.helpDrive;
 import org.firstinspires.ftc.teamcode.myMecnam;
 
 import java.util.List;
@@ -46,17 +45,13 @@ public class Autanomos extends LinearOpMode{
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        int placement = 0;
-
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();//new parameters opbejct
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
         imu = hardwareMap.get(BNO055IMU.class,"imu");//getting from hardware map
         parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         imu.initialize(parameters);
 
-        myMecnam odo = new myMecnam(hardwareMap,0,0,0, 13.6193231,13.250,1);
-        odo.updatePoseEstimate();
-        Pose2d currentPose = odo.getPoseEstimate();
+        myMecnam odo = new myMecnam(hardwareMap,0.00055,0,0, 13.6193231,13.250,1, telemetry);
         //updates x, y , roation
         //write loop later
 
@@ -89,11 +84,10 @@ public class Autanomos extends LinearOpMode{
                   //  telemetry.update();
                     if (updatedRecognitions.size() == 0) {
                         // empty list.  no objects recognized.
+
                         telemetry.addData("TFOD", "No items detected.");
                         telemetry.addData("Target Zone", "A");
-                        zero.blueOne(carl);
-                        placement = 0;
-                      //  telemetry.update();
+                        zero.blueOne(bob, telemetry, odo.spinyBoi);
                     } else {
                         // list is not empty.
                         // step through the list of recognitions and display boundary info.
@@ -109,13 +103,9 @@ public class Autanomos extends LinearOpMode{
                             if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
                                 telemetry.addData("Target Zone", "B");
                                 one.blueOne(bob);
-                                placement = 1;
-                                telemetry.addData("placement", placement);
                             } else if (recognition.getLabel().equals(LABEL_FIRST_ELEMENT)) {
                                 telemetry.addData("Target Zone", "C");
-                                placement = 4;
                                 four.BlueOne(carl);
-                                telemetry.addData("placement", placement);
 
                             } else {
                                 telemetry.addData("Target Zone", "UNKNOWN");
@@ -163,6 +153,7 @@ public class Autanomos extends LinearOpMode{
         //VuforiaLocalizer.Parameters parameters;
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minResultConfidence = 0.8f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, Vuforia);

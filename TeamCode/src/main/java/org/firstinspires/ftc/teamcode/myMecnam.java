@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -37,30 +38,32 @@ public class myMecnam extends MecanumDrive {
     public helpDrive gerlad;
     public Gyro spinyBoi;
     public encoders sam;
+    Telemetry telemetry;
 
     //constructor
-    public myMecnam(HardwareMap hardwareMap, double kv, double kA, double kStatic, double trackWidth, double wheelBase, double lateralMultiplier ) {
+    public myMecnam(HardwareMap hardwareMap, double kv, double kA, double kStatic, double trackWidth, double wheelBase, double lateralMultiplier, Telemetry tele) {
         super(kv,kA,kStatic, trackWidth, wheelBase,lateralMultiplier);
         rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
 
-        forward = new PIDCoefficients(0,0,0);
+        forward = new PIDCoefficients(0.001,0,0);
         sidewards = new PIDCoefficients(0,0,0);
-        notforward = new PIDCoefficients(0,0,0);
+        notforward = new PIDCoefficients(0.019, 0.001, 0.000); //turn
 
         motors = Arrays.asList(leftFrontMotor, leftBackMotor, rightBackMotor, rightFrontMotor);
         imu = hardwareMap.get(BNO055IMU.class,"imu");//getting from hardware map
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+        telemetry = tele;
 
         gerlad = new helpDrive(leftBackMotor, rightBackMotor,  leftFrontMotor,  rightFrontMotor, imu);
 
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        spinyBoi = new Gyro(imu,angles,gerlad,notforward);
+        spinyBoi = new Gyro(imu,angles,gerlad,notforward, telemetry);
 
     }
 

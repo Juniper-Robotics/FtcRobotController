@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Gyro {
     private double p, i,d;
-    private double porportional, integral, derivate, error, totalError = 0, lastError, integralActiveZone =2;
+    private double porportional, integral, derivate, error, totalError = 0, lastError, integralActiveZone =10;
    private double current = 0;
     private helpDrive Gerald;
     private BNO055IMU spinyboy;
@@ -37,11 +37,13 @@ public class Gyro {
 
     }
 
-    public Gyro(BNO055IMU spinyboi, Orientation angles, helpDrive Gerald, PIDCoefficients pid){
+
+    public Gyro(BNO055IMU spinyboi, Orientation angles, helpDrive Gerald, PIDCoefficients pid, Telemetry telemetry){
         this.Gerald = Gerald;
         this.spinyboy = spinyboi;
         this.angles = angles;
 
+        tele = telemetry;
         this.pid = pid;
         parameters = new BNO055IMU.Parameters();//new parameters opbejct
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;//sertting parameter to degrees
@@ -62,11 +64,14 @@ public class Gyro {
         angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         error = desired - angles.firstAngle ;
         long start = System.currentTimeMillis();
-        while(Math.abs(error) > 0.1 ){
+
+        while(Math.abs(error) > 5){
+            tele.addData("desired",desired);
             angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
             error = desired - angles.firstAngle ;
 
-            if(error < integralActiveZone && error!=0){
+            if(Math.abs(error) < integralActiveZone && error!=0){
                 totalError += error;
             }else{totalError = 0;}
             if(error == 0){
@@ -83,7 +88,13 @@ public class Gyro {
             tele.addData("angle1",angles.firstAngle);
             lastError = error;
             current = porportional + integral + derivate;
-            Gerald.setPowers(current, current, -current, - current);
+            if(error<0){
+            Gerald.setPowers(current, current, -current, - current);}
+            else if (error>0){
+
+                Gerald.setPowers(-current, -current, current,  current);
+            }
+            tele.update();
             //way to breakout
     }
 }}
