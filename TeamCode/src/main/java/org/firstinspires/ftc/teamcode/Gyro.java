@@ -65,7 +65,7 @@ public class Gyro {
         error = desired - angles.firstAngle ;
         long start = System.currentTimeMillis();
 
-        while(Math.abs(error) > 5){
+        while(Math.abs(error) > 3){
             tele.addData("desired",desired);
             angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 

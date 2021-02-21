@@ -113,6 +113,12 @@ public class encoders  {
         leftFrontMotor.setTargetPosition(-ticks);
         this.runToPosition();
     }
+    public void stop(){
+        rightBackMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+    }
 
     public void turnLeft(int ticks){
         rightBackMotor.setTargetPosition(ticks);
@@ -155,7 +161,9 @@ public class encoders  {
         mecam.spinyBoi.rotate(angle);
         telemetry.addData("angle",angle);
         float startAngle = mecam.spinyBoi.returnAngle();
-        while (Math.abs(error) > 1 )
+        double xError = x;
+        double yError = y;
+        while (/*Math.abs(error) > 7*/  xError>6||yError>7)
         {
            telemetry.addData("x",now.getX());
            telemetry.addData("y",now.getY());
@@ -165,6 +173,10 @@ public class encoders  {
 
             x = distance.getX() - now.getX();//x difference
             y = distance.getY() - now.getY();//y edifference
+
+            xError = x;
+            yError = y;
+
             error = Math.hypot(x,y); //noww is always the total error from begiing; disatcn
             //error = distanc-noww;
             telemetry.addData("error",error);
@@ -195,20 +207,20 @@ public class encoders  {
             if(backorfor)
             {
                 if(error>lastError+3){
-                    telemetry.addData("bigeer",8);
+                    telemetry.addData("bigeer","ew");
                  mecam.gerlad.setPowers(-current,-current, -current,-current);
                  }else{
                     telemetry.addData("smaller",9);
-                     mecam.gerlad.setPowers(current,current, current, current);
+                     mecam.gerlad.setPowers(current/2,current/2, current/2, current/2);
                     }
             }else
              {
                 if(error>lastError+3){
-                    telemetry.addData("bigeer",8);
+                    telemetry.addData("bigeer","ew");
                 mecam.gerlad.setPowers(current,current, current,current);
                 }else{
                     telemetry.addData("smaller",9);
-                mecam.gerlad.setPowers(-current, -current, -current, -current);
+                mecam.gerlad.setPowers(-current/2, -current/2, -current/2, -current/2);
                 }
             }
             //Thread.sleep(30);

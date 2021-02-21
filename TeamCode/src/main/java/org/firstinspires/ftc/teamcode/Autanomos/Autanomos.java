@@ -87,7 +87,7 @@ public class Autanomos extends LinearOpMode{
 
                         telemetry.addData("TFOD", "No items detected.");
                         telemetry.addData("Target Zone", "A");
-                        zero.blueOne(bob, telemetry, odo.spinyBoi);
+                        zero.blueOne(bob, telemetry, odo.spinyBoi, hardwareMap);
                     } else {
                         // list is not empty.
                         // step through the list of recognitions and display boundary info.
@@ -102,10 +102,12 @@ public class Autanomos extends LinearOpMode{
                             // check label to see which target zone to go after.
                             if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
                                 telemetry.addData("Target Zone", "B");
-                                one.blueOne(bob);
+                                zero.blueOne(bob, telemetry, odo.spinyBoi, hardwareMap);
+                              //  one.blueOne(carl);
                             } else if (recognition.getLabel().equals(LABEL_FIRST_ELEMENT)) {
                                 telemetry.addData("Target Zone", "C");
-                                four.BlueOne(carl);
+                                zero.blueOne(bob, telemetry, odo.spinyBoi, hardwareMap);
+                             //   four.BlueOne(carl);
 
                             } else {
                                 telemetry.addData("Target Zone", "UNKNOWN");
