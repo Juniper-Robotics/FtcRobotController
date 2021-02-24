@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Gyro {
     private double p, i,d;
-    private double porportional, integral, derivate, error, totalError = 0, lastError, integralActiveZone =10;
+    private double porportional, integral, derivate, error, totalError = 0, lastError, integralActiveZone =11;
    private double current = 0;
     private helpDrive Gerald;
     private BNO055IMU spinyboy;
@@ -20,13 +20,13 @@ public class Gyro {
     PIDCoefficients pid;
     Telemetry tele;
 
-    public Gyro(BNO055IMU spinyboi, Orientation angles, double p, double i, double d, helpDrive Gerald, Telemetry telemetry){
+    public Gyro(BNO055IMU spinyboii, Orientation angles, double pi, double ii, double di, helpDrive Gerald, Telemetry telemetry){
 
-        this.p = p;
-        this.i = i;
-        this.d = d;
+        p = pi;
+        i = ii;
+        d = di;
         this.Gerald = Gerald;
-        this.spinyboy = spinyboi;
+        spinyboy = spinyboii;
         this.angles = angles;
         tele = telemetry;
 
@@ -65,12 +65,14 @@ public class Gyro {
         error = desired - angles.firstAngle ;
         long start = System.currentTimeMillis();
 
-        while(Math.abs(error) > 3){
+        while(Math.abs(error) > 2.5){
+            tele.addData("p",p);
+            tele.addData("i",i);
             tele.addData("desired",desired);
             angles = spinyboy.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             error = desired - angles.firstAngle ;
-
+            tele.addData("error",error);
             if(Math.abs(error) < integralActiveZone && error!=0){
                 totalError += error;
             }else{totalError = 0;}
@@ -89,10 +91,12 @@ public class Gyro {
             tele.addData("angle1",angles.firstAngle);
             lastError = error;
             current = porportional + integral + derivate;
-            if(error<0){
-            Gerald.setPowers(current, current, -current, - current);}
-            else if (error>0){
-
+            if(angles.firstAngle>desired){
+            Gerald.setPowers(current, current, -current, - current);
+            tele.addData("hi",0);
+            }
+            else if (angles.firstAngle<desired){
+                tele.addData("bye",0);
                 Gerald.setPowers(-current, -current, current,  current);
             }
             tele.update();

@@ -30,7 +30,7 @@ public class encodr extends LinearOpMode {
         shooter.setShooterServoLaunch();
         int i = 1;
         while(shootOn){
-            shooter.on2();
+            shooter.on();
             sleep(1500);
 
             shooter.setShooterServoLaunch();
@@ -45,6 +45,9 @@ public class encodr extends LinearOpMode {
 
 
         }
-        shootOn = false;
+        telemetry.addData("i",0);
+        wobbleArm.off();
+        telemetry.addData("e",0);
+        sleep(4000);
     }
 }

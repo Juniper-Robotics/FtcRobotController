@@ -27,7 +27,7 @@ public class myMecnam extends MecanumDrive {
 
     public static PIDCoefficients forward;
     public static PIDCoefficients sidewards;
-    public static PIDCoefficients notforward;
+    public static PIDCoefficients turn;
 
     private Pose2d whereNow;
     private Pose2d target;
@@ -48,9 +48,9 @@ public class myMecnam extends MecanumDrive {
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
 
-        forward = new PIDCoefficients(0.001,0,0);
+        forward = new PIDCoefficients(0.025,0.003,0);
         sidewards = new PIDCoefficients(0,0,0);
-        notforward = new PIDCoefficients(0.019, 0.001, 0.000); //turn
+        turn = new PIDCoefficients(0.019, 0.001, 0.000); //turn
 
         motors = Arrays.asList(leftFrontMotor, leftBackMotor, rightBackMotor, rightFrontMotor);
         imu = hardwareMap.get(BNO055IMU.class,"imu");//getting from hardware map
@@ -63,7 +63,7 @@ public class myMecnam extends MecanumDrive {
 
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        spinyBoi = new Gyro(imu,angles,gerlad,notforward, telemetry);
+        spinyBoi = new Gyro(imu,angles,0.019,0.001,0.0,gerlad, telemetry);
 
     }
 

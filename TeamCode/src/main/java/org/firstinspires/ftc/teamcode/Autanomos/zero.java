@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Shooter;
 import org.firstinspires.ftc.teamcode.WobbleGoalArm;
 import org.firstinspires.ftc.teamcode.encoders;
 import org.firstinspires.ftc.teamcode.helpDrive;
+import org.firstinspires.ftc.teamcode.myMecnam;
 
 import static java.lang.Thread.sleep;
 
@@ -17,46 +18,45 @@ public class zero {
     //TELEMETRY INTO SPINYBOI
 
 
-    public static void blueOne(encoders robot, Telemetry telemetry, Gyro spinyboi, HardwareMap hardwareMap) throws InterruptedException {
+    public static void blueOne(encoders robot, Telemetry telemetry, Gyro spinyboi, HardwareMap hardwareMap, myMecnam mecam) throws InterruptedException {
+        telemetry.addData("none","hopefully no rings or one ring");
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         WobbleGoalArm wobbleArm= new WobbleGoalArm(hardwareMap);
         PIDCoefficients PID= new PIDCoefficients(0.025,0.003,0);
         boolean shootOn = false;
-        Pose2d pose1 = new Pose2d(20,10);
-        Pose2d pose2 = new Pose2d(52,7);
+        Pose2d pose1 = new Pose2d(22,7);
 
 
         robot.goTo(pose1, PID,telemetry);
+        spinyboi.rotate(7.5);
         robot.stop();
-        spinyboi.rotate(0);
         shootOn = true;
         boolean launch = true;
         int i = 0;
         while(shootOn){
+            telemetry.addData("none","hopefully no rings or one ring");
+            telemetry.update();
             shooter.on2();
-            sleep(1500);
+            sleep(1800);
 
             shooter.setShooterServoLaunch();
 
             sleep(1000);
             shooter.setShooterServoReset();
             i++;
-            if(i==3)
+            if(i==4)
             {
                 shootOn = false;
             }
         }
         shooter.off();
-        robot.goTo(pose2,PID,telemetry);
+        Pose2d now = mecam.getPoseEstimate();
+        Pose2d pose2 = new Pose2d(52,now.getY());
+        robot.goTo2(pose2,PID,telemetry);
         robot.stop();
-        spinyboi.rotate(0);
-        //wobbleArm.on();
-
-
-
-        //spinyboi.rotate(0);
-        //robot.goTo(pose2,PID,telemetry);
-
+        wobbleArm.off();
+        sleep(4000);
+        robot.stop();
 
     }
 
