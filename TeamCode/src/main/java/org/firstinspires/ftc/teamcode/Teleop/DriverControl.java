@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Collector;
 import org.firstinspires.ftc.teamcode.Gyro;
 import org.firstinspires.ftc.teamcode.Shooter;
-import org.firstinspires.ftc.teamcode.WobbleGoalArm;
 import org.firstinspires.ftc.teamcode.helpDrive;
 import org.firstinspires.ftc.teamcode.myMecnam;
 
@@ -48,10 +47,10 @@ public class DriverControl extends LinearOpMode {
         boolean collectorOn = true;
         boolean shooterOn = false;
         boolean wobbleOn = true;
-        Shooter shooter = new Shooter(hardwareMap, telemetry);
-        WobbleGoalArm wobbleArm= new WobbleGoalArm(hardwareMap);
+       Shooter shooter = new Shooter(hardwareMap, telemetry);
+        //WobbleGoalArm wobbleArm= new WobbleGoalArm(hardwareMap);
 
-        Collector collector = new Collector((hardwareMap));
+       Collector collector = new Collector((hardwareMap));
         helpDrive carl = new helpDrive(leftBackMotor, rightBackMotor, leftFrontMotor, rightFrontMotor, imu);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();//new parameters opbejct
@@ -62,12 +61,12 @@ public class DriverControl extends LinearOpMode {
         myMecnam mecam = new myMecnam(hardwareMap, 0, 0, 0, 13.6193231, 13.250, 1, telemetry);
         Pose2d eh = mecam.getPoseEstimate(); // position
        List<Double> now; //for wheel position
-        Gyro spinyboi = new Gyro(imu, angles, 0.019, 0.001, 0.000, carl, telemetry);
+        Gyro spinyboi = new Gyro(imu, angles, 0.009, 0.001, 0.000, carl, telemetry);
         Pose2d reset = new Pose2d(0,0,0);
         shooter.off();
-       // wobbleArm.on();
+        eh = reset;
         mecam.setPoseEstimate(reset);
-       // shooter.resetMotor();
+        //shooter.setShooterServoReset();
 
 
         waitForStart();
@@ -106,24 +105,24 @@ public class DriverControl extends LinearOpMode {
              //shooter stuff
                 if (gamepad2.right_trigger > 0.1) {
                     shooterOn = true;
-                    //telemetry.addData("hi",0);
-                    shooter.reset();
+                    telemetry.addData("hi",0);
+
                 } else {
                     shooterOn = false;
                 }
             if (shooterOn) {
                 shooter.on();
 
-                //telemetry.addData("bro",0);
+                telemetry.addData("bro",0);
             } else {
-                shooter.off();
+               shooter.off();
             }
 
             //collecter stuff
-            if (gamepad2.left_trigger != 0) {
-                collectorOn = true;
-            } else if (gamepad2.right_trigger == 0) {
-                collectorOn = false;
+            if (gamepad2.left_trigger !=0) {
+               collectorOn = true;
+            } else if (gamepad2.left_trigger ==0) {
+               collectorOn = false;
             }
             if (collectorOn) {
                 collector.on(gamepad2.left_trigger);
@@ -134,23 +133,25 @@ public class DriverControl extends LinearOpMode {
             //arm stuff
             if (gamepad2.b) {
                 wobbleOn = true;
-                shooter.reset();
+               shooter.reset();
             } else if (gamepad2.a) {
                 wobbleOn = false;
             }
             if (wobbleOn) {
-                wobbleArm.on();
+               // wobbleArm.on();
             } else {
-                wobbleArm.off();
+              // wobbleArm.off();
             }
             if(gamepad2.x){
-                wobbleArm.middle();
+               // wobbleArm.middle();
             }
 
 
             if (gamepad2.right_bumper) {
+                telemetry.addData("rightNumper",0);
                 shooter.setShooterServoLaunch();
             } else {
+
                 shooter.setShooterServoReset();
             }
 

@@ -48,9 +48,9 @@ public class myMecnam extends MecanumDrive {
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
 
-        forward = new PIDCoefficients(0.025,0.003,0);
+        forward = new PIDCoefficients(0.02,0.003,0);
         sidewards = new PIDCoefficients(0,0,0);
-        turn = new PIDCoefficients(0.019, 0.001, 0.000); //turn
+        turn = new PIDCoefficients(0.01, 0.001, 0.000); //turn
 
         motors = Arrays.asList(leftFrontMotor, leftBackMotor, rightBackMotor, rightFrontMotor);
         imu = hardwareMap.get(BNO055IMU.class,"imu");//getting from hardware map
@@ -63,16 +63,16 @@ public class myMecnam extends MecanumDrive {
 
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        spinyBoi = new Gyro(imu,angles,0.019,0.001,0.0,gerlad, telemetry);
+        spinyBoi = new Gyro(imu,angles,0.008,0.001,0.0,gerlad, telemetry);
 
     }
 
     public double ticksToInches(int x){
-        //do this stuf later
-        //29 per rotation
-        //38.4845 cm circumferance aka 15.151378 in
-        //5.49778571 per tick
-        return x*(0.0230068359);
+        //cirmunferance 11.87374866142in
+        //28 per rotation
+        //0.0230068359
+
+        return x*(0.0213463442);
     }
 
     @NotNull

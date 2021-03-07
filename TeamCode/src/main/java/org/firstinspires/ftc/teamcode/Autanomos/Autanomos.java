@@ -75,7 +75,7 @@ public class Autanomos extends LinearOpMode{
                 // should be set to the value of the images used to create the TensorFlow Object Detection model
                 // (typically 16/9).
                 tfod.setZoom(2, 16.0 / 9.0);
-                sleep(1000);
+                sleep(1500);
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();

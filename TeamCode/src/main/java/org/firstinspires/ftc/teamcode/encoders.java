@@ -19,7 +19,7 @@ public class encoders  {
     private DcMotor rightFrontMotor;
     private BNO055IMU imu;
     private myMecnam mecam;
-    private double integralActiveZone = 2.5;
+    private double integralActiveZone = 6.8;
 
 
     public encoders(DcMotor leftBackMotor, DcMotor rightBackMotor, DcMotor leftFrontMotor, DcMotor rightFrontMotor , BNO055IMU imu, myMecnam mecam){
@@ -166,7 +166,7 @@ public class encoders  {
         float startAngle = mecam.spinyBoi.returnAngle();
         double xError = x;
         double yError = y;
-        while (/*Math.abs(error) > 7*/  xError>6||yError>8)
+        while (Math.abs(error) > 4 /* xError>2&&yError>8*/)
         {
            telemetry.addData("x",now.getX());
            telemetry.addData("y",now.getY());
@@ -209,9 +209,10 @@ public class encoders  {
             current = porportional + integral + derivate;
             telemetry.addData("lastError", lastError);
             telemetry.addData("current",current);
-            if(backorfor)
+            if(!backorfor)
             {
                 if(error>lastError+3){
+                    telemetry.addData("e",1);
                     telemetry.addData("bigeer","ew");
                  mecam.gerlad.setPowers(-current,-current, -current,-current);
                  }else{
@@ -220,6 +221,7 @@ public class encoders  {
                     }
             }else
              {
+                 telemetry.addData("you",1);
                 if(error>lastError+3){
                     telemetry.addData("bigeer","ew");
                 mecam.gerlad.setPowers(current,current, current,current);

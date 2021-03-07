@@ -24,9 +24,9 @@ public class Shooter {
     double lastTime = 0;
     //figure this stuff out
     final double TICKS_PER_ROTATION = 28;
-    final double TARGET_SPEED = 5800; //Update later
-    final double SHOOTER_SERVO_LAUNCH_POSITION = 0;
-    final double SHOOT_SERVO_RESET_POSITION = 0.8;
+    final double TARGET_SPEED = -7000; //Update later
+    final double SHOOTER_SERVO_LAUNCH_POSITION = 0.75;
+    final double SHOOT_SERVO_RESET_POSITION = 0;
     Telemetry telemetry;
 
     public Shooter(HardwareMap hardwareMap,Telemetry telemetry) {
@@ -50,9 +50,10 @@ public class Shooter {
     public void on(){
         //commant out this stuff
        updateShooterSpeed();
-        telemetry.addData("shooterspeed", shooterPID.update(shooterSpeed));
-       shooterMotor.setPower(shooterPID.update(-7000));
-        telemetry.addData("currentPos", shooterMotor.getCurrentPosition());
+       // telemetry.addData("shooterspeed", shooterPID.update(shooterSpeed));
+       shooterMotor.setPower(shooterPID.update(5000));
+     //   telemetry.addData("currentPos", shooterMotor.getCurrentPosition());
+      //  telemetry.addData("test",0);
         //uncommint out this
         // |
         // V
@@ -63,20 +64,17 @@ public class Shooter {
     public void on2(){
         //commant out this stuff
         updateShooterSpeed();
-        telemetry.addData("shooterspeed", shooterPID.update(-shooterSpeed));
-        shooterMotor.setPower(shooterPID.update(-shooterSpeed));
+       // telemetry.addData("shooterspeed", shooterPID.update(-shooterSpeed));
+        shooterMotor.setPower(shooterPID.update(-3500));
         telemetry.addData("currentPos", shooterMotor.getCurrentPosition());
-        //uncommint out this
-        // |
-        // V
-        // shooterMotor.setPower(0.8);
+
 
     }
 
     public void updateShooterSpeed(){
         int currentEncoderPos = shooterMotor.getCurrentPosition();
         int deltaEncPos = currentEncoderPos - lastPos;
-       // telemetry.addData("encPos", deltaEncPos);
+        telemetry.addData("enc", deltaEncPos);
         //was minutes but no method for that
         double currentTime = elapsedTime.seconds()/60.0;
         double deltaTime = currentTime - lastTime;
@@ -118,10 +116,12 @@ public class Shooter {
     }
 
     public void setShooterServoLaunch(){
+        telemetry.addData("launch pos",shooterServo.getPosition());
         shooterServo.setPosition(SHOOTER_SERVO_LAUNCH_POSITION);
     }
 
     public void setShooterServoReset(){
-        shooterServo.setPosition(SHOOT_SERVO_RESET_POSITION);
+        telemetry.addData("reset pos",shooterServo.getPosition());
+        shooterServo.setPosition(0.1);
     }
 }

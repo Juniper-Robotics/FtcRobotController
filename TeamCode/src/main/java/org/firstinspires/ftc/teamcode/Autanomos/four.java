@@ -28,12 +28,15 @@ public class four{
         robot.goTo(pose1, PID,telemetry);
         spinyboi.rotate(7.5);
         robot.stop();
+
         shootOn = true;
         boolean launch = true;
         int i = 0;
+        shooter.on2();
         while(shootOn){
-            telemetry.addData("four","i hope this is four");
             shooter.on2();
+            telemetry.addData("four","i hope this is four");
+
             sleep(1800);
 
             shooter.setShooterServoLaunch();

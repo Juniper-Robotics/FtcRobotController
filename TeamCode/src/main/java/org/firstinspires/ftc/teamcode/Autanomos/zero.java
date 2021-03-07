@@ -33,9 +33,10 @@ public class zero {
         shootOn = true;
         boolean launch = true;
         int i = 0;
+        shooter.on2();
         while(shootOn){
             telemetry.addData("none","hopefully no rings or one ring");
-            telemetry.update();
+            //telemetry.update();
             shooter.on2();
             sleep(1800);
 
@@ -48,6 +49,7 @@ public class zero {
             {
                 shootOn = false;
             }
+            telemetry.update();
         }
         shooter.off();
         Pose2d now = mecam.getPoseEstimate();
